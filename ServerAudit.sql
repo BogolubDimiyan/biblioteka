@@ -27,15 +27,16 @@ WITH FORMAT,
 
 CREATE LOGIN TestUser WITH PASSWORD = '12345';
 
+ALTER LOGIN TestUser WITH PASSWORD = '0000';
+
 SELECT 
-    event_time,         
-    action_id,          
-    succeeded,          
-    session_server_principal_name, 
-    database_name,      
-    object_name,        
-    statement           
-FROM sys.fn_get_audit_file('C:\SQLAudit\*.sqlaudit', DEFAULT, DEFAULT);
+    event_time, 
+    server_principal_name, 
+    database_principal_name, 
+    object_name, 
+    statement, 
+    action_id 
+FROM sys.fn_get_audit_file('C:\SQLAudit\*.sqlaudit', DEFAULT, DEFAULT)
 
 
 CREATE LOGIN User22 WITH PASSWORD = '0000';
