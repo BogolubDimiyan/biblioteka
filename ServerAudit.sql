@@ -27,7 +27,14 @@ WITH FORMAT,
 
 CREATE LOGIN TestUser WITH PASSWORD = '12345';
 
-SELECT *       
+SELECT 
+    event_time,         
+    action_id,          
+    succeeded,          
+    session_server_principal_name, 
+    database_name,      
+    object_name,        
+    statement           
 FROM sys.fn_get_audit_file('C:\SQLAudit\*.sqlaudit', DEFAULT, DEFAULT);
 
 
@@ -35,10 +42,24 @@ CREATE LOGIN User22 WITH PASSWORD = '0000';
 ALTER SERVER ROLE sysadmin ADD MEMBER User22;
 
 
-SELECT name, is_disabled 
-FROM sys.sql_logins
-WHERE name = 'TestUser';
+drop Login TestUser
 
-SELECT name, is_disabled 
-FROM sys.sql_logins
-WHERE name = 'User22';
+--SELECT 
+--    session_id, 
+--    login_name, 
+--    host_name, 
+--    program_name, 
+--    status
+--FROM sys.dm_exec_sessions
+--WHERE login_name = 'TestUser';
+
+--KILL 89;
+--KILL 68;
+
+--SELECT name, is_disabled 
+--FROM sys.sql_logins
+--WHERE name = 'TestUser';
+
+--SELECT name, is_disabled 
+--FROM sys.sql_logins
+--WHERE name = 'User22';
