@@ -1,3 +1,10 @@
+IF EXISTS (SELECT name FROM sys.databases WHERE name = N'Библиотека')
+BEGIN
+    ALTER DATABASE Библиотека SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE Библиотека;
+END
+
+
 create database Библиотека
 
 use Библиотека
@@ -59,26 +66,38 @@ create table пополнение_фонда
     foreign key (код_сотрудника) references сотрудники(код_сотрудника),
     foreign key (код_типа_литературы) references тип_литературы(код_типа_литературы)
 );
+----------------------------------------------------------------------------------------------
 
+use master
+go
 
-CREATE SERVER AUDIT HIPAA_Audit
-TO FILE (FILEPATH = 'C:\SQLAudit\');
+  
+CREATE SERVER AUDIT HIPAA_Audit  
+    TO FILE ( FILEPATH ='C:\SQLAudit\' );
+
 
 CREATE SERVER AUDIT SPECIFICATION HIPAA_Audit_Specification  
 FOR SERVER AUDIT HIPAA_Audit  
-    ADD (FAILED_LOGIN_GROUP), 
+    ADD (FAILED_LOGIN_GROUP),
 	ADD (BACKUP_RESTORE_GROUP),
-	ADD (LOGIN_CHANGE_PASSWORD_GROUP)
+    ADD (SERVER_OBJECT_CHANGE_GROUP);  
 GO  
 
-
-CREATE DATABASE AUDIT SPECIFICATION HIPAA_DB_Audit_Specification
-FOR SERVER AUDIT HIPAA_Audit
-    ADD (INSERT, UPDATE, DELETE ON dbo.библиотеки BY PUBLIC);
-GO
-
--- Enables the audit.   
-
+  
 ALTER SERVER AUDIT HIPAA_Audit  
 WITH (STATE = ON);  
-GO  
+GO
+
+SELECT 
+    event_time,         
+    action_id,          
+    succeeded,          
+    session_server_principal_name, 
+    database_name,      
+    object_name,        
+    statement           
+FROM sys.fn_get_audit_file('C:\SQLAudit\*.sqlaudit', DEFAULT, DEFAULT);
+
+
+
+
