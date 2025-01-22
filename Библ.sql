@@ -68,35 +68,6 @@ create table пополнение_фонда
 );
 ----------------------------------------------------------------------------------------------
 
-use master
-go
-
-  
-CREATE SERVER AUDIT HIPAA_Audit  
-    TO FILE ( FILEPATH ='C:\SQLAudit\' );
-
-
-CREATE SERVER AUDIT SPECIFICATION HIPAA_Audit_Specification  
-FOR SERVER AUDIT HIPAA_Audit  
-    ADD (FAILED_LOGIN_GROUP),
-	ADD (BACKUP_RESTORE_GROUP),
-    ADD (SERVER_OBJECT_CHANGE_GROUP);  
-GO  
-
-  
-ALTER SERVER AUDIT HIPAA_Audit  
-WITH (STATE = ON);  
-GO
-
-SELECT 
-    event_time,         
-    action_id,          
-    succeeded,          
-    session_server_principal_name, 
-    database_name,      
-    object_name,        
-    statement           
-FROM sys.fn_get_audit_file('C:\SQLAudit\*.sqlaudit', DEFAULT, DEFAULT);
 
 
 
